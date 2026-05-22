@@ -4,6 +4,7 @@ from PIL import Image, ImageTk # to import the image and to display the image in
 from student import Student # to import the student class from the student.py file
 import os
 from train import Train # to import the train class from the train.py file
+from face_recognition import Face_Recognition # to import the face_recognition class from the face_recognition.py file
 
 
 class Face_Recognition_System:
@@ -75,10 +76,10 @@ class Face_Recognition_System:
         detect_img_btn = detect_img_btn.resize((220, 220), Image.Resampling.LANCZOS)
         self.detect_img1 = ImageTk.PhotoImage(detect_img_btn)
         
-        b1 = Button(bg_img, image=self.detect_img1, cursor="hand2") 
+        b1 = Button(bg_img, image=self.detect_img1, cursor="hand2", command=self.face_data) 
         b1.place(x=500, y=100, width=220, height=220) 
         
-        b1_1 = Button(bg_img, text="Face Detector", cursor="hand2",font = ("times new roman", 15, "bold"), bg="darkblue", fg="white")
+        b1_1 = Button(bg_img, text="Face Detector", cursor="hand2", command=self.face_data,font = ("times new roman", 15, "bold"), bg="darkblue", fg="white")
         b1_1.place(x=500, y=300, width=220, height=40)
         
         
@@ -108,7 +109,7 @@ class Face_Recognition_System:
         b1_1.place(x=1100, y=300, width=220, height=40)
         
         
-    # Train button
+# Train button
     
         train_img_btn = Image.open(r"college_images\train_btn.jpeg")
         train_img_btn = train_img_btn.resize((220, 220), Image.Resampling.LANCZOS)
@@ -179,7 +180,11 @@ class Face_Recognition_System:
         self.app=Train(self.new_window)
 
         
-
+    def face_data(self):
+        self.new_window=Toplevel(self.root)
+        self.app=Face_Recognition(self.new_window)
+        
+    
 
 
 

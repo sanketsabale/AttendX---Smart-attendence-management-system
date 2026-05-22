@@ -32,7 +32,7 @@ class Student:
         
         # Image 1
         
-        img = Image.open(r"C:\Users\sanke\OneDrive\Desktop\Face Recognition System\college_images\studentimg2.jpeg")
+        img = Image.open(r"college_images\studentimg2.jpeg")
         img = img.resize((500, 130), Image.Resampling.LANCZOS) # to resize the image to fit the tkinter window
         self.photoimg = ImageTk.PhotoImage(img)
         
@@ -42,7 +42,7 @@ class Student:
         
         # Image 2
         
-        img1 = Image.open(r"C:\Users\sanke\OneDrive\Desktop\Face Recognition System\college_images\studentimg1.jpeg")
+        img1 = Image.open(r"college_images\studentimg1.jpeg")
         img1 = img1.resize((500, 130), Image.Resampling.LANCZOS) 
         self.photoimg1 = ImageTk.PhotoImage(img1)
         
@@ -52,7 +52,7 @@ class Student:
         
         # Image 3
         
-        img2 = Image.open(r"C:\Users\sanke\OneDrive\Desktop\Face Recognition System\college_images\studentimg3.jpeg")
+        img2 = Image.open(r"college_images\studentimg3.jpeg")
         img2 = img2.resize((500, 130), Image.Resampling.LANCZOS) 
         self.photoimg2 = ImageTk.PhotoImage(img2)
         
@@ -64,7 +64,7 @@ class Student:
     #bg image
         
         
-        img3 = Image.open(r"C:\Users\sanke\OneDrive\Desktop\Face Recognition System\college_images\bg_img.jpeg")
+        img3 = Image.open(r"college_images\bg_img.jpeg")
         img3 = img3.resize((1530, 710), Image.Resampling.LANCZOS) 
         self.photoimg3 = ImageTk.PhotoImage(img3)
         
@@ -75,14 +75,14 @@ class Student:
         title_lbl.place(x=0, y=0, width=1530, height=50)
         
         main_frame = Frame(bg_img,bd=2)
-        main_frame.place(x=20,y=50,width=1480,height=600)
+        main_frame.place(x=20,y=55,width=1480,height=600)
         
     # Left label frame
         
         Left_frame = LabelFrame(main_frame,bd=2,bg="white",relief=RIDGE,text="Student Details",font=("times new roman", 12, "bold"))
         Left_frame.place(x=10,y=10,width=730,height=580)
         
-        img_left = Image.open(r"C:\Users\sanke\OneDrive\Desktop\Face Recognition System\college_images\frameimg1.jpeg")
+        img_left = Image.open(r"college_images\frameimg1.jpeg")
         img_left = img_left.resize((720, 130), Image.Resampling.LANCZOS)
         self.photoimg_left = ImageTk.PhotoImage(img_left)
  
@@ -246,7 +246,7 @@ class Student:
         Right_frame = LabelFrame(main_frame,bd=2,bg="white",relief=RIDGE,text="Student Details",font=("times new roman", 12, "bold"))
         Right_frame.place(x=750,y=10,width=720,height=580)
         
-        img_right = Image.open(r"C:\Users\sanke\OneDrive\Desktop\Face Recognition System\college_images\student_rightframe.jpeg")
+        img_right = Image.open(r"college_images\student_rightframe.jpeg")
         img_right = img_right.resize((720, 130), Image.Resampling.LANCZOS)
         self.photoimg_right = ImageTk.PhotoImage(img_right)
  
