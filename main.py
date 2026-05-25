@@ -5,6 +5,7 @@ from student import Student # to import the student class from the student.py fi
 import os
 from train import Train # to import the train class from the train.py file
 from face_recognition import Face_Recognition # to import the face_recognition class from the face_recognition.py file
+from attendance import Attendance # to import the attendance class from the attendance.py file  
 
 
 class Face_Recognition_System:
@@ -89,20 +90,20 @@ class Face_Recognition_System:
         attendance_img_btn = attendance_img_btn.resize((220, 220), Image.Resampling.LANCZOS)
         self.attendance_img1 = ImageTk.PhotoImage(attendance_img_btn)
         
-        b1 = Button(bg_img, image=self.attendance_img1, cursor="hand2") 
+        b1 = Button(bg_img, image=self.attendance_img1, cursor="hand2", command=self.attendance_data) 
         b1.place(x=800, y=100, width=220, height=220) 
         
-        b1_1 = Button(bg_img, text="Attendance", cursor="hand2",font = ("times new roman", 15, "bold"), bg="darkblue", fg="white")
+        b1_1 = Button(bg_img, text="Attendance", cursor="hand2", command=self.attendance_data,font = ("times new roman", 15, "bold"), bg="darkblue", fg="white")
         b1_1.place(x=800, y=300, width=220, height=40)
         
         
  # Help button
     
-        help_img_btn = Image.open(r"college_images\help_btn.jpeg")
+        help_img_btn = Image.open(r"college_images\help_btn.jpeg") 
         help_img_btn = help_img_btn.resize((220, 220), Image.Resampling.LANCZOS)
         self.help_img1 = ImageTk.PhotoImage(help_img_btn)
         
-        b1 = Button(bg_img, image=self.help_img1, cursor="hand2") 
+        b1 = Button(bg_img, image=self.help_img1, cursor="hand2",) 
         b1.place(x=1100, y=100, width=220, height=220) 
         
         b1_1 = Button(bg_img, text="Help Desk", cursor="hand2",font = ("times new roman", 15, "bold"), bg="darkblue", fg="white")
@@ -184,7 +185,10 @@ class Face_Recognition_System:
         self.new_window=Toplevel(self.root)
         self.app=Face_Recognition(self.new_window)
         
-    
+    def attendance_data(self):
+        self.new_window=Toplevel(self.root)
+        self.app=Attendance(self.new_window)
+        
 
 
 

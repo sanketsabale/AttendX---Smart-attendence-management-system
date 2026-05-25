@@ -471,7 +471,8 @@ class Student:
         self.var_email.set("")
         self.var_phone.set("")
         self.var_teacher.set("")
-        self.var_radio1.set("")   
+        self.var_radio1.set("")  
+         
 # ============== Generate Data set or Take Photo Sample ==============
     def generate_dataset(self):
         if self.var_dep.get() == "Select Department" or self.var_std_name.get() == "" or self.var_std_id.get() == "":
@@ -482,9 +483,7 @@ class Student:
                 my_cursor=conn.cursor()
                 my_cursor.execute("select * from student where Student_id=%s", (self.var_std_id.get(),))
                 myresult = my_cursor.fetchall()
-                id = 0
-                for x in myresult:
-                    id += 1
+                id = self.var_std_id.get()
                 
                 my_cursor.execute("update student set `Dep`=%s, `Course`=%s, `Year`=%s, `Semester`=%s, `Name`=%s, `Division`=%s, `Roll_No`=%s, `Gender`=%s, `Email`=%s, `Phone`=%s, `Address`=%s, `Teacher`=%s, `photo`=%s where `Student_id`=%s", (
                                                                                                                 self.var_dep.get(),
@@ -500,7 +499,7 @@ class Student:
                                                                                                                 self.var_address.get(),
                                                                                                                 self.var_teacher.get(),
                                                                                                                 self.var_radio1.get(),
-                                                                                                                self.var_std_id.get()==id+1
+                                                                                                                self.var_std_id.get()
                                                                                                             ))
                 conn.commit()
                 self.fetch_data()

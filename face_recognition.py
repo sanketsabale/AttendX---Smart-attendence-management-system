@@ -44,17 +44,24 @@ class Face_Recognition:
 
 # Attendence
     def mark_attendance(self, i, r, n, d):
-        with open("attendance.csv", "r+", newline="\n") as f:
+        with open("attendance.csv", "a+", newline="\n") as f:
+            f.seek(0)
             myDataList = f.readlines()
             nameList = []
+
             for line in myDataList:
                 entry = line.split(",")
                 nameList.append(entry[0])
-            if ((i not in nameList) and (r not in nameList) and (n not in nameList) and (d not in nameList)):
+
+            if i not in nameList:
                 now = datetime.now()
                 d1 = now.strftime("%d/%m/%Y")
                 dtString = now.strftime("%H:%M:%S")
+
                 f.writelines(f"\n{i},{r},{n},{d},{dtString},{d1},Present")
+
+                f.flush()
+                print("Data Written Successfully")
 
 
        
@@ -74,21 +81,30 @@ class Face_Recognition:
                 conn=mysql.connector.connect(host="localhost", username="root", password="root", database="face_recognizer")
                 my_cursor=conn.cursor()
 
-                my_cursor.execute("select Name from student where Student_id=" + str(id))
+                my_cursor.execute("select Name from student where Student_id=%s", (id,))
                 n = my_cursor.fetchone()
-                n = "+".join(n)
 
-                my_cursor.execute("select Roll_No from student where Student_id=" + str(id))
+                my_cursor.execute("select Roll_No from student where Student_id=%s", (id,))
                 r = my_cursor.fetchone()
-                r = "+".join(r)
 
-                my_cursor.execute("select Dep from student where Student_id=" + str(id))
+                my_cursor.execute("select Dep from student where Student_id=%s", (id,))
                 d = my_cursor.fetchone()
-                d = "+".join(d)
 
-                my_cursor.execute("select Student_id from student where Student_id=" + str(id))
+                my_cursor.execute("select Student_id from student where Student_id=%s", (id,))
                 i = my_cursor.fetchone()
-                i = "+".join(i)
+
+
+                # check if data exists
+                if n and r and d and i:
+                    n = n[0]
+                    r = r[0]
+                    d = d[0]
+                    i = i[0]
+                else:
+                    n = "Unknown"
+                    r = "Unknown"
+                    d = "Unknown"
+                    i = "Unknown"
 
 
                 if confidence > 77:
@@ -97,6 +113,7 @@ class Face_Recognition:
                     cv2.putText(img, f"Name: {n}", (x, y-30), cv2.FONT_HERSHEY_COMPLEX, 0.8, (255,255,255), 3)
                     cv2.putText(img, f"Dep: {d}", (x, y-5), cv2.FONT_HERSHEY_COMPLEX, 0.8, (255, 255, 255), 3)
                     self.mark_attendance(i, r, n, d)
+                    print("Attendance Marked")
                 else:
                     cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 3)
                     cv2.putText(img, "Unknown Face", (x, y - 5), cv2.FONT_HERSHEY_COMPLEX, 0.8,(255, 0, 0), 3)

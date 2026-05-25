@@ -4,13 +4,26 @@ from PIL import Image, ImageTk
 from tkinter import messagebox
 import mysql.connector
 import cv2
+import os
+import csv
+from tkinter import filedialog
 
-
+mydata = [] # to store the data of the attendance in a list
 class Attendance:
     def __init__(self,root):
         self.root=root
         self.root.geometry("1530x790+0+0")  # width x height + x_axis + y_axis
         self.root.title("Face Recognition System")
+
+# variables
+        self.var_atten_id = StringVar()
+        self.var_atten_name = StringVar()
+        self.var_atten_roll = StringVar()
+        self.var_atten_dep = StringVar()
+        self.var_atten_time = StringVar()
+        self.var_atten_date = StringVar()
+        self.var_atten_attendance = StringVar()
+
 
 # Image 1
         
@@ -66,49 +79,49 @@ class Attendance:
         attendanceId_label = Label(left_inside_frame, text="Attendance ID:", font=("times new roman", 13, "bold"), bg="white")
         attendanceId_label.grid(row=0, column=0, padx=10, pady=5, sticky=W)
 
-        attendanceId_entry = ttk.Entry(left_inside_frame, width=20, font=("times new roman", 13, "bold"))
+        attendanceId_entry = ttk.Entry(left_inside_frame, width=20, textvariable=self.var_atten_id, font=("times new roman", 13, "bold"))
         attendanceId_entry.grid(row=0, column=1, padx=10, pady=5, sticky=W)
 
     # Name 
         nameLabel = Label(left_inside_frame, text="Name:", font=("times new roman", 13, "bold"), bg="white")
         nameLabel.grid(row=1, column=0, padx=10, pady=5, sticky=W)
 
-        nameEntry = ttk.Entry(left_inside_frame, width=20, font=("times new roman", 13, "bold"))
+        nameEntry = ttk.Entry(left_inside_frame, width=20, textvariable=self.var_atten_name, font=("times new roman", 13, "bold"))
         nameEntry.grid(row=1, column=1, padx=10, pady=5, sticky=W)
 
     # Roll No 
         rollLabel = Label(left_inside_frame, text="Roll No:", font=("times new roman", 13, "bold"), bg="white")
         rollLabel.grid(row=0, column=2, padx=4, pady=8, sticky=W)
 
-        rollEntry = ttk.Entry(left_inside_frame, width=20, font=("times new roman", 13, "bold"))
+        rollEntry = ttk.Entry(left_inside_frame, width=20, textvariable=self.var_atten_roll, font=("times new roman", 13, "bold"))
         rollEntry.grid(row=0, column=3, padx=10, pady=5, sticky=W)
 
     # Department
         depLabel = Label(left_inside_frame, text="Department:", font=("times new roman", 13, "bold"), bg="white")
         depLabel.grid(row=1, column=2, padx=4, pady=8, sticky=W)
 
-        depEntry = ttk.Entry(left_inside_frame, width=20, font=("times new roman", 13, "bold"))
+        depEntry = ttk.Entry(left_inside_frame, width=20, textvariable=self.var_atten_dep, font=("times new roman", 13, "bold"))
         depEntry.grid(row=1, column=3, padx=10, pady=5, sticky=W)
 
     # Time  
         timeLabel = Label(left_inside_frame, text="Time:", font=("times new roman", 13, "bold"), bg="white")
         timeLabel.grid(row=2, column=0, padx=10, pady=5, sticky=W)
 
-        timeEntry = ttk.Entry(left_inside_frame, width=20, font=("times new roman", 13, "bold"))
+        timeEntry = ttk.Entry(left_inside_frame, width=20, textvariable=self.var_atten_time, font=("times new roman", 13, "bold"))
         timeEntry.grid(row=2, column=1, padx=10, pady=5, sticky=W)
 
     # Date
         dateLabel = Label(left_inside_frame, text="Date:", font=("times new roman", 13, "bold"), bg="white")
         dateLabel.grid(row=2, column=2, padx=4, pady=8, sticky=W)
 
-        dateEntry = ttk.Entry(left_inside_frame, width=20, font=("times new roman", 13, "bold"))
+        dateEntry = ttk.Entry(left_inside_frame, width=20, textvariable=self.var_atten_date, font=("times new roman", 13, "bold"))
         dateEntry.grid(row=2, column=3, padx=10, pady=5, sticky=W)
 
     # Attendance Status
         attendanceLabel = Label(left_inside_frame, text="Attendance Status:", font=("times new roman", 13, "bold"), bg="white")
         attendanceLabel.grid(row=3, column=0, padx=10, pady=5, sticky=W)
 
-        self.atten_status = ttk.Combobox(left_inside_frame, font=("times new roman", 13, "bold"), state="readonly", width=20)
+        self.atten_status = ttk.Combobox(left_inside_frame, width=20, textvariable=self.var_atten_attendance, font=("times new roman", 13, "bold"), state="readonly")
         self.atten_status['values'] = ("Status", "Present", "Absent")
         self.atten_status.grid(row=3, column=1, padx=10, pady=5, sticky=W)
         self.atten_status.current(0)
@@ -118,16 +131,16 @@ class Attendance:
         btn_frame = Frame(left_inside_frame,bd=2,relief=RIDGE,bg="white")
         btn_frame.place(x=0,y=300,width=715,height=35)
         
-        import_btn = Button(btn_frame, text="Import Csv",font=("times new roman", 13, "bold"), bg="blue", fg="white", width=17)
+        import_btn = Button(btn_frame, text="Import Csv", command=self.import_csv, font=("times new roman", 13, "bold"), bg="blue", fg="white", width=17)
         import_btn.grid(row=0, column=0)
         
-        export_btn = Button(btn_frame, text="Export Csv",font=("times new roman", 13, "bold"), bg="blue", fg="white", width=17)
+        export_btn = Button(btn_frame, text="Export Csv", command=self.export_csv, font=("times new roman", 13, "bold"), bg="blue", fg="white", width=17)
         export_btn.grid(row=0, column=1)
         
-        update_btn = Button(btn_frame, text="Update",font=("times new roman", 13, "bold"), bg="blue", fg="white", width=17)
+        update_btn = Button(btn_frame, text="Update", font=("times new roman", 13, "bold"), bg="blue", fg="white", width=17)
         update_btn.grid(row=0, column=2)
         
-        reset_btn = Button(btn_frame, text="Reset",font=("times new roman", 13, "bold"), bg="blue", fg="white", width=17)
+        reset_btn = Button(btn_frame, text="Reset", command=self.reset_data, font=("times new roman", 13, "bold"), bg="blue", fg="white", width=17)
         reset_btn.grid(row=0, column=3)
 
 
@@ -169,10 +182,70 @@ class Attendance:
         self.AttendanceReportTable.column("time", width=100)
         self.AttendanceReportTable.column("date", width=100)
         self.AttendanceReportTable.column("attendance", width=100)
+
         self.AttendanceReportTable.pack(fill=BOTH, expand=1)
 
+        self.AttendanceReportTable.bind("<ButtonRelease>", self.get_cursor)
 
 
+    # fetch data
+    def fetchData(self, rows):
+        self.AttendanceReportTable.delete(*self.AttendanceReportTable.get_children())
+        for i in rows:
+            self.AttendanceReportTable.insert("", END, values=i)
+
+
+# import csv
+    def import_csv(self):
+        global mydata
+        mydata.clear()
+        fln = filedialog.askopenfilename(initialdir=os.getcwd(), title="Open CSV", filetypes=(("CSV File", "*.csv"), ("All File", "*.*")), parent=self.root)
+        with open(fln) as myfile:
+            csvread = csv.reader(myfile, delimiter=",")
+            for i in csvread:
+                mydata.append(i)
+            self.fetchData(mydata)
+
+# export csv
+    def export_csv(self):
+        try:
+            if len(mydata) < 1:
+                messagebox.showerror("No Data", "No data found to export", parent=self.root)
+                return False
+            fln = filedialog.asksaveasfilename(initialdir=os.getcwd(), title="Open CSV", filetypes=(("CSV File", "*.csv"), ("All File", "*.*")), parent=self.root)
+            with open(fln, mode="w", newline="") as myfile:
+                exp_write = csv.writer(myfile, delimiter=",")
+                for i in mydata:
+                    exp_write.writerow(i)
+                messagebox.showinfo("Data Exported", "Your data has been exported to " + os.path.basename(fln) + " successfully")
+        except Exception as es:
+            messagebox.showerror("Error", f"Due to: {str(es)}", parent=self.root)
+
+    def get_cursor(self, event=""):
+        cursor_row = self.AttendanceReportTable.focus()
+        content = self.AttendanceReportTable.item(cursor_row)
+        data = content["values"]
+
+        if len(data) != 7:
+            return
+
+        self.var_atten_id.set(data[0])
+        self.var_atten_name.set(data[1])
+        self.var_atten_roll.set(data[2])
+        self.var_atten_dep.set(data[3])
+        self.var_atten_time.set(data[4])
+        self.var_atten_date.set(data[5])
+        self.var_atten_attendance.set(data[6])
+
+
+    def reset_data(self):
+        self.var_atten_id.set("")
+        self.var_atten_name.set("")
+        self.var_atten_roll.set("")
+        self.var_atten_dep.set("")
+        self.var_atten_time.set("")
+        self.var_atten_date.set("")
+        self.var_atten_attendance.set("Status")
 
 
 
