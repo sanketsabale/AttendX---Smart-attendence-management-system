@@ -380,6 +380,8 @@ class Student:
         cursor_focus = self.student_table.focus()
         content = self.student_table.item(cursor_focus)
         data = content["values"]
+        if len(data) == 0:
+            return
         
         self.var_dep.set(data[0])
         self.var_course.set(data[1])
@@ -481,8 +483,6 @@ class Student:
             try:
                 conn=mysql.connector.connect(host="localhost", username="root", password="root", database="face_recognizer")
                 my_cursor=conn.cursor()
-                my_cursor.execute("select * from student where Student_id=%s", (self.var_std_id.get(),))
-                myresult = my_cursor.fetchall()
                 id = self.var_std_id.get()
                 
                 my_cursor.execute("update student set `Dep`=%s, `Course`=%s, `Year`=%s, `Semester`=%s, `Name`=%s, `Division`=%s, `Roll_No`=%s, `Gender`=%s, `Email`=%s, `Phone`=%s, `Address`=%s, `Teacher`=%s, `photo`=%s where `Student_id`=%s", (

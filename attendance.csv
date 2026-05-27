@@ -1,4 +1,6 @@
+ID,Roll,Name,Department,Time,Date,Status
+1,1,sanket,Computer Science,23:56:06,26/05/2026,Present
+3,3,omkar,Computer Science,23:59:29,26/05/2026,Present
+2,2,ram,Information Technology,23:59:30,26/05/2026,Present
 
-1,1,sanket,Computer Science,09:44:48,25/05/2026,Present
-2,2,ram,Information Technology,09:45:25,25/05/2026,Present
-3,3,omkar,Computer Science,09:50:17,25/05/2026,Present
+1,1,sanket,Computer Science,10:50:57,27/05/2026,Present

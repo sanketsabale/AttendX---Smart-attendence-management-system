@@ -44,28 +44,38 @@ class Face_Recognition:
 
 # Attendence
     def mark_attendance(self, i, r, n, d):
+
         with open("attendance.csv", "a+", newline="\n") as f:
+
             f.seek(0)
+
             myDataList = f.readlines()
-            nameList = []
+
+            now = datetime.now()
+            d1 = now.strftime("%d/%m/%Y")
+            dtString = now.strftime("%H:%M:%S")
+
+            already_marked = False
 
             for line in myDataList:
-                entry = line.split(",")
-                nameList.append(entry[0])
 
-            if i not in nameList:
-                now = datetime.now()
-                d1 = now.strftime("%d/%m/%Y")
-                dtString = now.strftime("%H:%M:%S")
+                entry = line.strip().split(",")
+
+                # check same student + same date
+                if len(entry) > 5:
+                    if entry[0] == str(i) and entry[5] == d1:
+                        already_marked = True
+                        break
+
+            if not already_marked:
 
                 f.writelines(f"\n{i},{r},{n},{d},{dtString},{d1},Present")
 
-                f.flush()
-                print("Data Written Successfully")
+                print("Attendance Successfully Written")
 
 
        
-# face recignition function
+# face recognition function
     def face_recog(self):
         def draw_boundary(img, classifier, scaleFactor, minNeighbors, color, text, clf):
             gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -76,10 +86,7 @@ class Face_Recognition:
             for (x, y, w, h) in features:
                 cv2.rectangle(img, (x, y), (x + w, y + h), (0,255,0), 3)
                 id, predict = clf.predict(gray_image[y:y + h, x:x + w])
-                confidence = int((100 * (1 - predict / 300)))
-
-                conn=mysql.connector.connect(host="localhost", username="root", password="root", database="face_recognizer")
-                my_cursor=conn.cursor()
+                confidence = int(100 * (1 - predict / 300))
 
                 my_cursor.execute("select Name from student where Student_id=%s", (id,))
                 n = my_cursor.fetchone()
@@ -113,7 +120,6 @@ class Face_Recognition:
                     cv2.putText(img, f"Name: {n}", (x, y-30), cv2.FONT_HERSHEY_COMPLEX, 0.8, (255,255,255), 3)
                     cv2.putText(img, f"Dep: {d}", (x, y-5), cv2.FONT_HERSHEY_COMPLEX, 0.8, (255, 255, 255), 3)
                     self.mark_attendance(i, r, n, d)
-                    print("Attendance Marked")
                 else:
                     cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 3)
                     cv2.putText(img, "Unknown Face", (x, y - 5), cv2.FONT_HERSHEY_COMPLEX, 0.8,(255, 0, 0), 3)
@@ -127,11 +133,20 @@ class Face_Recognition:
         
         faceCascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
         clf = cv2.face.LBPHFaceRecognizer_create()
+        if not os.path.exists("classifier.xml"):
+            messagebox.showerror("Error", "Please train the data first!")
+            return
         clf.read("classifier.xml")
 
         video_cap = cv2.VideoCapture(0)
+        conn=mysql.connector.connect(host="localhost", username="root", password="root", database="face_recognizer")
+        my_cursor=conn.cursor()
+
         while True:
             ret, img = video_cap.read()
+            if not ret:
+                messagebox.showerror("Error", "Camera not working")
+                break
             img = recognize(img, clf, faceCascade)
             cv2.imshow("Welcome to Face Recognition", img)
 
@@ -139,6 +154,7 @@ class Face_Recognition:
                 break
         video_cap.release()
         cv2.destroyAllWindows()
+        conn.close()
 
 
 

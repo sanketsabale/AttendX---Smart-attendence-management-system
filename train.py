@@ -35,7 +35,7 @@ class Train:
         
         
 # Bottom image
-        img_bottom = Image.open(r"C:\Users\sanke\OneDrive\Desktop\Face Recognition System\college_images\photos_btn.webp")
+        img_bottom = Image.open(r"college_images\photos_btn.webp")
         img_bottom = img_bottom.resize((1450, 425), Image.Resampling.LANCZOS)
         self.photoimg_bottom = ImageTk.PhotoImage(img_bottom)
  
@@ -60,6 +60,10 @@ class Train:
             cv2.waitKey(1) == 13
             
         ids = np.array(ids)
+
+        if len(faces) == 0:
+                messagebox.showerror("Error", "No images found in data folder")
+                return
         
  # =========== Train the classifier and save ============
         
